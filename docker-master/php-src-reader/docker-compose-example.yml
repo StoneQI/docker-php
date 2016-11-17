@@ -1,0 +1,5 @@
+reader:
+  build: .
+  #volumes:
+    # - your-php-src-code:/php-src
+  command: "sleep 9999999999999"
