@@ -1,15 +1,22 @@
 mysql:
   image: mysql
   environment:
-    - MYSQL_DATABASE=getyii
-    - MYSQL_ROOT_PASSWORD=getyii.com
+    - MYSQL_DATABASE=root
+    - MYSQL_ROOT_PASSWORD=root
   ports:
     - 3306:3306
 
-web:
-  build: .
+php-fpm:
+  image: php:7.1-rc-fpm
+  volumes:
+    - ./src:/app
+  expose:
+  - "9000"
+nginx:
+  image: nginx:1.11
   links:
     - mysql:mysql
+    - php-fpm:php-fpm
   ports:
     - 80:80
   environment:
@@ -17,6 +24,9 @@ web:
     - MYSQL_PASSWORD=getyii.com
     - APP_ENV=Production
   volumes:
-    - ./vendor:/app/vendor:rw
-    - ~/.composer/cache:/root/.composer/cache:rw
+    - ./nginx/nginx.conf:/etc/nginx/conf.d/websit.conf
+    - ./src:/app
+  volumes_from:
+    - php-fpm
+
     # - .:/app:rw # you should uncomment this line if you want to develop the app.
